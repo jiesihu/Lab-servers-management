@@ -126,3 +126,219 @@
 - 任何问题或疑问，请联系服务器管理员。
 
 希望以上操作手册能够帮助到大家更好地使用服务器。
+
+
+# 服务器管理员操作手册
+
+## 1. 创建用户并设定权限
+
+### 1.1 创建新用户
+1. **创建用户**：
+    ```sh
+    sudo adduser username
+    ```
+    按照提示设置用户密码和其他信息。
+
+2. **添加用户到特定组**（例如，`docker`组）：
+    ```sh
+    sudo usermod -aG docker username
+    ```
+
+### 1.2 设置用户权限
+- 确保新用户只能访问其个人目录：
+    ```sh
+    sudo chmod 700 /home/username
+    ```
+
+- 如果需要为用户提供特定目录的写权限，可以设置ACL（访问控制列表）：
+    ```sh
+    sudo setfacl -m u:username:rwx /path/to/directory
+    ```
+
+## 2. Docker安装与配置
+
+### 2.1 安装Docker
+1. **更新apt包索引**：
+    ```sh
+    sudo apt-get update
+    ```
+
+2. **安装必要的软件包**：
+    ```sh
+    sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+    ```
+
+3. **添加Docker官方GPG密钥**：
+    ```sh
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    ```
+
+4. **添加Docker APT源**：
+    ```sh
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    ```
+
+5. **更新APT包索引**：
+    ```sh
+    sudo apt-get update
+    ```
+
+6. **安装Docker CE**：
+    ```sh
+    sudo apt-get install -y docker-ce
+    ```
+
+7. **启动Docker服务**：
+    ```sh
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    ```
+
+### 2.2 配置Docker用户组
+- 将所有需要使用Docker的用户添加到`docker`组：
+    ```sh
+    sudo usermod -aG docker username
+    ```
+
+- 提醒用户注销并重新登录以使更改生效。
+
+## 3. GPU配置
+
+### 3.1 安装NVIDIA驱动
+1. **添加NVIDIA包存储库**：
+    ```sh
+    sudo add-apt-repository ppa:graphics-drivers/ppa
+    sudo apt-get update
+    ```
+
+2. **安装NVIDIA驱动程序**：
+    ```sh
+    sudo apt-get install -y nvidia-driver-460
+    ```
+
+3. **重启系统**：
+    ```sh
+    sudo reboot
+    ```
+
+### 3.2 安装NVIDIA Docker支持
+1. **设置包存储库和GPG密钥**：
+    ```sh
+    distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+    && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+    && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+    ```
+
+2. **安装nvidia-docker2**：
+    ```sh
+    sudo apt-get update
+    sudo apt-get install -y nvidia-docker2
+    sudo systemctl restart docker
+    ```
+
+## 4. 系统维护
+
+### 4.1 定期更新和升级系统
+1. **更新软件包列表**：
+    ```sh
+    sudo apt-get update
+    ```
+
+2. **升级所有包**：
+    ```sh
+    sudo apt-get upgrade -y
+    sudo apt-get dist-upgrade -y
+    ```
+
+### 4.2 安全性检查和防火墙配置
+1. **安装UFW（Uncomplicated Firewall）**：
+    ```sh
+    sudo apt-get install -y ufw
+    ```
+
+2. **配置防火墙规则**：
+    ```sh
+    sudo ufw allow ssh
+    sudo ufw allow 2375/tcp  # Docker端口（可选）
+    sudo ufw enable
+    ```
+
+### 4.3 定期备份
+- 建议使用`rsync`或其他备份工具定期备份重要数据：
+    ```sh
+    rsync -avh /path/to/data /path/to/backup/location
+    ```
+
+## 5. 硬盘管理
+
+### 5.1 查看硬盘使用情况
+- 使用`df`命令查看硬盘使用情况：
+    ```sh
+    df -h
+    ```
+
+### 5.2 挂载新硬盘
+1. **查看所有磁盘**：
+    ```sh
+    lsblk
+    ```
+
+2. **创建挂载点**：
+    ```sh
+    sudo mkdir -p /mnt/new_disk
+    ```
+
+3. **挂载磁盘**：
+    ```sh
+    sudo mount /dev/sdX1 /mnt/new_disk
+    ```
+
+4. **更新`/etc/fstab`以自动挂载**：
+    ```sh
+    sudo nano /etc/fstab
+    ```
+    添加以下行：
+    ```sh
+    /dev/sdX1 /mnt/new_disk ext4 defaults 0 0
+    ```
+
+### 5.3 管理硬盘权限
+- 设置挂载点的权限：
+    ```sh
+    sudo chown -R username:username /mnt/new_disk
+    sudo chmod 755 /mnt/new_disk
+    ```
+
+## 6. 系统监控
+
+### 6.1 安装监控工具
+- 安装`htop`进行系统资源监控：
+    ```sh
+    sudo apt-get install -y htop
+    ```
+
+### 6.2 安装NVIDIA监控工具
+- 安装`nvidia-smi`进行GPU监控：
+    ```sh
+    sudo apt-get install -y nvidia-utils-460
+    ```
+
+### 6.3 设置监控报警
+- 安装并配置监控工具（例如Prometheus + Grafana）来监控系统性能，并设置报警规则。
+
+## 7. 日志管理
+
+### 7.1 查看系统日志
+- 查看`syslog`日志：
+    ```sh
+    sudo tail -f /var/log/syslog
+    ```
+
+### 7.2 查看Docker日志
+- 查看Docker容器日志：
+    ```sh
+    docker logs container_name
+    ```
+
+希望以上操作手册能帮助管理员更好地管理和维护服务器。
+
