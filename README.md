@@ -24,6 +24,7 @@
 - 使用``` rm ```命令的时候请千万注意不要删除他人文件。
 
 ## 2. 文件管理
+如果已经被分配了**用户目录**可以跳过2.1。
 ### 2.1 选择存储空间较大的硬盘
 1. **查看硬盘信息**：
     ```sh
@@ -33,17 +34,17 @@
 2. **选择硬盘**：根据显示的硬盘信息，选择存储空间较大的硬盘。
 3. **存储数据**：将数据存储在选定硬盘的挂载点。例如，如果选择的硬盘挂载在`/mnt/large_disk`，则将数据存储在该目录下。创建一个以自己名字命名的文件夹，将使用到的所有文件存储在该文件夹中。比如，名字为“张三“的同学：
     ```sh
-    mkdir -p /mnt/large_disk/zhangsan
+    mkdir -p /mnt/large_disk/username
     ```
     大家完成项目或者毕业之后请将数据整理到存储服务器或者删除，否则后续将会被清理。
    
 ### 2.2 数据存储
-- 用户应将数据存储在个人目录下的`data`文件夹内。
+- 用户应将所有代码、数据存储在个人目录下。建议将conda也安装在个人目录下，避免主盘空间被环境占满。
     ```sh
-    mkdir -p /mnt/large_disk/zhangsan/data
+    mkdir -p /mnt/large_disk/username
     ```
 ### 2.3 数据挂载
-   如果需要的数据集已经在存储服务器上了，那么可以直接通过挂载从存储服务器读取数据不需要拷贝，目前的局域网带宽是1024MB/s，适合对带宽要求不大的任务，大家可以根据需要自行设计方案。
+   如果需要的数据集已经在**存储服务器**上了，那么可以直接通过挂载从存储服务器读取数据不需要拷贝，目前的局域网带宽是1024MB/s，适合对带宽要求不大的任务，大家可以根据需要自行设计方案。
 
 ## 3. 深度学习环境配置
 - 每个用户应在个人目录下创建和管理自己的 Anaconda 环境或者使用Docker。
@@ -51,16 +52,19 @@
 - 关于Anaconda和Docker的使用方法下面作简单介绍。
 ### 3.1 Anaconda安装
 1. **下载Anaconda**：
-  相关文件请下载到自己的目录中。
+个别服务器的用户目录的上级目录有miniconda的安装包，可直接运行安装。
+如果没有，相关文件请下载到自己的目录中。
    ```sh
-    cd /mnt/large_disk/zhangsan
-    wget https://repo.anaconda.com/archive/Anaconda3-2023.03-Linux-x86_64.sh
+    cd /mnt/large_disk/username
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     ```
-2. **安装Anaconda**：
+3. **安装Anaconda**：
     ```sh
-    bash Anaconda3-2023.03-Linux-x86_64.sh
+    chmod +x Miniconda3-latest-Linux-x86_64.sh
+    ./Miniconda3-latest-Linux-x86_64.sh
     ```
     按照提示完成安装。
+   部分机器安装完后会出现```conda: command not found```可自行解决，不需要找管理员。
 
 ### 3.2 创建虚拟环境
 1. **创建新环境**：
@@ -73,14 +77,23 @@
     ```
 ### 3.2 使用Docker配置环境
 1. **安装Docker**：
-    - 如果服务器上未安装Docker，请联系管理员。
+    - 如果服务器上未安装Docker或者没有提供Docker权限，请联系管理员。
 2. **拉取Docker镜像**：
-    - 用户可以根据需求选择合适的Docker镜像。例如，拉取一个包含pytorch 2的镜像。
+    - 直接查看当前docker镜像
+  ```sh
+  docker images
+  ```
+    - 如果没有合适的，用户可以根据需求选择合适的Docker镜像。例如，拉取一个包含pytorch 2的镜像。
+    
 4. **运行Docker容器**：
     - 运行一个带有GPU支持的Docker容器：
         ```sh
-        docker run --gpus all -it --name tf_container tensorflow/tensorflow:latest-gpu bash
+        docker run --gpus all -it ghcr.io/pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime bash
         ```
+    - 运行带有GPU支持的容器并且挂载上自己的文件夹
+    ```sh
+    docker run --gpus all -it -v /mnt/sdb/username:/mnt/sdb/username ghcr.io/pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime bash
+    ```
 5. **管理Docker容器**：
     - 查看正在运行的容器：
         ```sh
@@ -135,7 +148,7 @@
 ### 1.1 创建新用户
 1. **创建用户**：
     ```sh
-    sudo adduser username
+    sudo adduser $username
     ```
     按照提示设置用户密码和其他信息。
 
@@ -143,16 +156,24 @@
     ```sh
     sudo usermod -aG docker username
     ```
+    一般都需要添加到docker组中。
 
 ### 1.2 设置用户权限
 - 确保新用户只能访问其个人目录：
     ```sh
     sudo chmod 700 /home/username
     ```
-
+- 为用户创建其文件夹（可选）
+  ```sh
+  # 假设硬盘挂载位置为 /mnt/sdb
+  sudo mkdir /mnt/sdb/username
+  ```
+  
 - 如果需要为用户提供特定目录的写权限，可以设置ACL（访问控制列表）：
     ```sh
-    sudo setfacl -m u:username:rwx /path/to/directory
+    # 假设硬盘挂载位置为 /mnt/sdb
+    sudo chown -R username:username /mnt/sdb/username
+    sudo chmod -R 700 /mnt/sdb/username
     ```
 
 ## 2. Docker安装与配置
@@ -222,19 +243,8 @@
     ```
 
 ### 3.2 安装NVIDIA Docker支持
-1. **设置包存储库和GPG密钥**：
-    ```sh
-    distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-    && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
-    && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-    ```
-
-2. **安装nvidia-docker2**：
-    ```sh
-    sudo apt-get update
-    sudo apt-get install -y nvidia-docker2
-    sudo systemctl restart docker
-    ```
+    参考官网教程：  
+    https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 
 ## 4. 系统维护
 
