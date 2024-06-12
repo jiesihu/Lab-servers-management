@@ -279,6 +279,11 @@
     ```sh
     rsync -avh /path/to/data /path/to/backup/location
     ```
+### 4.4 确保必要的软件包已安装
+```
+tmux
+
+```
 
 ## 5. 硬盘管理
 
