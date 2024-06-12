@@ -80,9 +80,9 @@
     - 如果服务器上未安装Docker或者没有提供Docker权限，请联系管理员。
 2. **拉取Docker镜像**：
     - 直接查看当前docker镜像
-  ```sh
-  docker images
-  ```
+      ```sh
+      docker images
+      ```
     - 如果没有合适的，用户可以根据需求选择合适的Docker镜像。例如，拉取一个包含pytorch 2的镜像。
     
 4. **运行Docker容器**：
