@@ -77,6 +77,7 @@
     conda activate env_name
     ```
 ### 3.2 使用Docker配置环境
+需要系统权限的命令大多可以在docker容器中运行。
 1. **安装Docker**：
     - 如果服务器上未安装Docker或者没有提供Docker权限，请联系管理员。
 2. **拉取Docker镜像**：
