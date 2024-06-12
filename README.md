@@ -142,7 +142,7 @@
 
 
 # 服务器管理员操作手册
-
+**为保证系统安全，避免在管理员账户运行代码！！！**
 ## 1. 创建用户并设定权限
 
 ### 1.1 创建新用户
@@ -260,7 +260,7 @@
     sudo apt-get dist-upgrade -y
     ```
 
-### 4.2 安全性检查和防火墙配置
+### 4.2 安全性检查和防火墙配置（可选）
 1. **安装UFW（Uncomplicated Firewall）**：
     ```sh
     sudo apt-get install -y ufw
@@ -273,7 +273,7 @@
     sudo ufw enable
     ```
 
-### 4.3 定期备份
+### 4.3 定期备份 （可选）
 - 建议使用`rsync`或其他备份工具定期备份重要数据：
     ```sh
     rsync -avh /path/to/data /path/to/backup/location
