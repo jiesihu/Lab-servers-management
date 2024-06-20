@@ -35,14 +35,14 @@
 2. **选择硬盘**：根据显示的硬盘信息，选择存储空间较大的硬盘。
 3. **存储数据**：将数据存储在选定硬盘的挂载点。例如，如果选择的硬盘挂载在`/mnt/large_disk`，则将数据存储在该目录下。创建一个以自己名字命名的文件夹，将使用到的所有文件存储在该文件夹中。
     ```sh
-    mkdir -p /mnt/large_disk/username
+    mkdir -p /mnt/large_disk/$username
     ```
     大家完成项目或者毕业之后请将数据整理到存储服务器或者删除，否则后续将会被清理。
    
 ### 2.2 数据存储
 - 用户应将所有代码、数据存储在个人目录下。建议将conda也安装在个人目录下，避免主盘空间被环境占满。
     ```sh
-    mkdir -p /mnt/large_disk/username
+    mkdir -p /mnt/large_disk/$username
     ```
 ### 2.3 数据挂载
    如果需要的数据集已经在**存储服务器**上了，那么可以直接通过挂载从存储服务器读取数据不需要拷贝，目前的局域网带宽是1024MB/s，适合对带宽要求不大的任务，大家可以根据需要自行设计方案。
@@ -56,7 +56,7 @@
 个别服务器的用户目录的上级目录有miniconda的安装包，可直接运行安装。
 如果没有，相关文件请下载到自己的目录中。
    ```sh
-    cd /mnt/large_disk/username
+    cd /mnt/large_disk/$username
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     ```
 3. **安装Anaconda**：
@@ -94,7 +94,7 @@
         ```
     - 运行带有GPU支持的容器并且挂载上自己的文件夹
     ```sh
-    docker run --gpus all -it -v /mnt/sdb/username:/mnt/sdb/username ghcr.io/pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime bash
+    docker run --gpus all -it -v /mnt/sdb/$username:/mnt/sdb/$username ghcr.io/pytorch/pytorch:2.3.1-cuda11.8-cudnn8-runtime bash
     ```
 5. **管理Docker容器**：
     - 查看正在运行的容器：
@@ -156,26 +156,26 @@
 
 2. **添加用户到特定组**（例如，`docker`组）：
     ```sh
-    sudo usermod -aG docker username
+    sudo usermod -aG docker $username
     ```
     一般都需要添加到docker组中。
 
 ### 1.2 设置用户权限
 - 确保新用户只能访问其个人目录：
     ```sh
-    sudo chmod 700 /home/username
+    sudo chmod 700 /home/$username
     ```
 - 为用户创建其文件夹（可选）
   ```sh
   # 假设硬盘挂载位置为 /mnt/sdb
-  sudo mkdir /mnt/sdb/username
+  sudo mkdir /mnt/sdb/$username
   ```
   
 - 如果需要为用户提供特定目录的写权限，可以设置ACL（访问控制列表）：
     ```sh
     # 假设硬盘挂载位置为 /mnt/sdb
-    sudo chown -R username:username /mnt/sdb/username
-    sudo chmod -R 700 /mnt/sdb/username
+    sudo chown -R $username:$username /mnt/sdb/$username
+    sudo chmod -R 700 /mnt/sdb/$username
     ```
 
 ## 2. Docker安装与配置
@@ -220,7 +220,7 @@
 ### 2.2 配置Docker用户组
 - 将所有需要使用Docker的用户添加到`docker`组：
     ```sh
-    sudo usermod -aG docker username
+    sudo usermod -aG docker $username
     ```
 
 - 提醒用户注销并重新登录以使更改生效。
@@ -322,7 +322,7 @@ tmux
 ### 5.3 管理硬盘权限
 - 设置挂载点的权限：
     ```sh
-    sudo chown -R username:username /mnt/new_disk
+    sudo chown -R $username:$username /mnt/new_disk
     sudo chmod 755 /mnt/new_disk
     ```
 
