@@ -194,6 +194,8 @@
 3. **添加Docker官方GPG密钥**：
     ```sh
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    # 如果卡住可以使用清华镜像
+    curl -fsSL https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
     ```
 
 4. **添加Docker APT源**：
