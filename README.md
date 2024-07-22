@@ -284,8 +284,8 @@
     ```
 ### 4.4 确保必要的软件包已安装
 ```
-tmux
-htop
+sudo apt update
+sudo apt install htop tmux
 
 ```
 
