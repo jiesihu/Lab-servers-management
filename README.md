@@ -68,10 +68,10 @@
    部分机器安装完后会出现```conda: command not found```，解决方式如下:
    ```sh
    # 添加路径
-    echo 'export PATH="$HOME/miniconda3/bin:$PATH"' >> ~/.bashrc
+   echo 'export PATH="$HOME/miniconda3/bin:$PATH"' >> ~/.bashrc
    #加载配置文件
    source ~/.bashrc
-    # 初始化
+   # 初始化
    conda init
    # 然后重启terminal即可
     ```
