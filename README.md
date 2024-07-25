@@ -65,7 +65,16 @@
     ./Miniconda3-latest-Linux-x86_64.sh
     ```
     按照提示完成安装。
-   部分机器安装完后会出现```conda: command not found```可自行解决，不需要找管理员。
+   部分机器安装完后会出现```conda: command not found```，解决方式如下:
+   ```sh
+   # 添加路径
+    echo 'export PATH="$HOME/miniconda3/bin:$PATH"' >> ~/.bashrc
+   #加载配置文件
+   source ~/.bashrc
+    # 初始化
+   conda init
+   # 然后重启terminal即可
+    ```
 
 ### 3.2 创建虚拟环境
 1. **创建新环境**：
