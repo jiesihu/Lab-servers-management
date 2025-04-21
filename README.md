@@ -152,7 +152,7 @@
 # 本地运行下面代码将服务器的校园网映射到本地8088端口
 ssh -N -f -L localhost:8088:10.248.98.2:80 用户名@服务器ip
 # 在本地浏览器输入下面的网址来登录8088端口并登陆即可使得服务器成功访问校园网
-http://localhost:8088/srun_portal_pc?ac_id=1&theme=basic2
+http://localhost:8088
 ```
 
 ## 6. 联系管理员
