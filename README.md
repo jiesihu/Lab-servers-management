@@ -157,9 +157,18 @@ http://localhost:8088
 - 使用 SOCKS5 动态代理方式
 ```sh
 # 本地运行
-ssh -D 1080 用户名@服务器ip
+ssh -N -D localhost:1080 用户名@服务器ip
+```
+- 配置你的本地浏览器使用SOCKS代理：
+打开你的浏览器的网络代理设置。  
+选择手动配置代理。  
+找到 SOCKS Host/Server 的选项，输入 localhost。  
+输入 SOCKS Port 的端口号，输入 8080。  
+通常，选择 SOCKS v5。  
+确保其他协议（HTTP, HTTPS, FTP）的代理是关闭或设置为“无代理”，或者如果你希望所有流量都走代理，也可以配置。但对于校园网登录页面，只配置SOCKS通常就够了。  
+```sh
 # 在浏览器输入
-https://net.hitsz.edu.cn/index_1.html?wlanuserip=10.249.25.88&wlanacname=
+https://net.hitsz.edu.cn/
 ```
 
 ## 6. 联系管理员
